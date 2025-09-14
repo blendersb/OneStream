@@ -99,12 +99,12 @@ async def cleanup():
         print("Web server stopped.")
 
     print("Stopping clients...")
-    if Yukki.is_initialized:
+    if app.is_initialized:
         print("Main client stopped.")
         #userbot.leave_chat(message.chat.id)
         
         print("User bot stopped.")
-        await Yukki.stop()
+        await app.stop()
         print("User bot stopped.")
         await userbot.stop()
     
