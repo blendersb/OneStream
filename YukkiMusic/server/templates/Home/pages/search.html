@@ -1,0 +1,14 @@
+<section id="search">
+    <h1>Function Page {{page}}</h1>
+    {%for video in data %}
+    <div class="file-name" id="{{video.id.videoId}}">
+        <img class="movieimg" alt="thumbnail" src="{{video.snippet.thumbnails.default.url}}"/>
+     <div width="70%">   
+        <text class="video-title">{{video.snippet.title}}</text>
+        <avatar>SV</avatar>
+        <text class="video-channel" >{{video.snippet.channelTitle}}</text>
+        </div>
+    </div>
+    
+    {% endfor %}
+</section>

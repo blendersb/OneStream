@@ -1,0 +1,391 @@
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Date and Time Selector</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="MobileOptimized" content="176">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="robots" content="noindex,nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url('static',filename='css/style.css') }}">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    
+  </head>
+<body>
+  <header>
+    
+    
+      <nav>
+        <div id="search_section" class="search_section">
+        <input type="text" id="searchBox" class="searchbox" placeholder="Search  ">
+        <div class="suggestions"></div>
+        </div>
+        <div class="nav-links">
+              <a href="{{ url('home') }}">Home</a>
+              <a href="{{ url('subscribed') }}">Subscribed</a>
+              <a href="{{ url('functions') }}">Functions</a>
+        </div>
+      </nav>
+  </header>
+
+  <div id="content">
+    
+      {% block content %}{% endblock %}
+    
+  </div>
+</body>
+
+<script>
+var selectableDivs = document.querySelectorAll('.file-name');
+var loadingDivs = document.querySelectorAll('.demo-video-card');
+var suggestions = document.querySelector('.suggestions');
+var resultsContainer = document.getElementById('search');
+var selected_id='';
+var searchSuggest = "{{ url('searchquery') }}";
+var search_page="{{ url('search')}}";
+var nextPage_url="{{ url('scroll')}}";
+var url = new URL(window.location.href);
+let queryItem ='';
+let nextPageToken = '{{nextPageToken}}';
+let isFetching = false;
+var params = new URLSearchParams(url.search);
+if(params.get('q')){
+  queryItem = params.get('q'); 
+}else{
+  queryItem='';
+}
+
+////////-------function on swip-------///////
+function handleSwipe(touchEndX,touchStartX,touchEndY,touchStartY,touchArea) {
+  var selectableDivs = document.querySelectorAll('.file-name');
+  const horizontalDistance = touchEndX - touchStartX;
+  const verticalDistance = touchEndY - touchStartY;
+  const swipeThreshold = 150; // Minimum distance in pixels to consider it a swipe
+
+  if (Math.abs(horizontalDistance) > Math.abs(verticalDistance) && Math.abs(horizontalDistance) > swipeThreshold) {
+      // Detected a horizontal swipe
+      if (horizontalDistance > 0) {
+          selectableDivs.forEach(d => d.classList.remove('selected'));
+          touchArea.classList.add('selected');
+          console.log('Swiped Right',`id:${selected_id}`);
+          onMainButtonClick();
+      } else {
+          console.log('Swiped Left');
+          //alert('Left Swipe Detected!');
+      }
+  }
+}
+////////--------- addd swip handler -------////////////
+function onSwipeFunction(touchArea){
+        var selectableDivs = document.querySelectorAll('.file-name');
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+        
+        // Handle touch start
+        
+
+
+        touchArea.addEventListener('touchstart', function(event) {
+            selected_id = touchArea.id;
+            
+            touchStartX = event.touches[0].clientX;
+            touchStartY = event.touches[0].clientY;
+        });
+        /*touchArea.addEventListener('touchmove',function(event){
+          selectableDivs.forEach(d => d.classList.remove('selected'));
+            touchArea.classList.add('selected');
+         })*/
+        // Handle touch end
+        touchArea.addEventListener('touchend', function(event) {
+            
+            
+            touchEndX = event.changedTouches[0].clientX;
+            touchEndY = event.changedTouches[0].clientY;
+            handleSwipe(touchEndX,touchStartX,touchEndY,touchStartY,touchArea);
+        });
+
+}
+
+// if (params.get('pageToken')){
+//   nextPageToken=params.get('pageToken');
+// }
+
+  // Function to fetch more results
+
+  ///////--------- infinite scroll event--------////////
+ async function fetchMoreResults() {
+    if (isFetching) return;
+     isFetching = true;
+  
+    if (nextPageToken !== undefined && nextPageToken !== null &&  nextPageToken.trim && nextPageToken.trim() !== ''){
+        /*var postData = {
+                'q': nextPageToken,
+                'type': 'json'
+            };
+      var response = await fetch(nextPage_url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData),
+            })
+      var data = await response.json()
+           */ 
+
+
+     var response = await fetch(`${nextPage_url}?q=${nextPageToken}&type=json`);
+    
+     var data = await response.json();
+    
+     if (data.data) {
+         resultsContainer = document.getElementById('search');
+         let list = JSON.parse(JSON.stringify(data.data));
+         list.forEach(item => {
+              
+             let videoDiv = document.createElement('div');
+             videoDiv.classList.add("file-name");
+             videoDiv.style.display='flex';
+             videoDiv.id=item.id;
+             videoDiv.innerHTML = `
+        <div class="image-container">
+        <img class="movieimg" alt="thumbnail" src="${item.thumbnails[0].url}">
+        <span class="bottom-right">${item.length}</span>
+    </div>
+     <div class="file-dtl" width="70%">   
+        <text class="video-title">${item.title}</text>
+        <div class="channel-dtl"><avatar><img class="avatar" src="${item.channelThumbnail}"/></avatar>
+            <text class="video-channel" >${item.channel} &#10242 ${item.short_views} &#10242 ${item.publishedTime}</text>
+        </div>
+        
+        
+        </div>
+             `;
+             resultsContainer.appendChild(videoDiv);
+             var selectableDivs = document.querySelectorAll('.file-name');
+             videoDiv.addEventListener('click', () => {
+            // Remove the 'selected' class from all divs
+              selectableDivs.forEach(d => d.classList.remove('selected'));
+
+            // Add 'selected' class to the clicked div
+              videoDiv.classList.add('selected');
+
+              activateMainButton();
+              window.Telegram.WebApp.expand();
+              selected_id=videoDiv.id;
+            
+            // Get and print the ID of the selected div
+            
+            });
+        onSwipeFunction(videoDiv);
+    });
+             //main();
+             //console.log(item);
+        // });
+         nextPageToken = data.nextPageToken || '';
+     }
+    }
+     isFetching = false;
+
+
+ }
+
+
+function performSearch(item){
+  //document.getElementById('searchBox').value = item;
+  //suggestions.innerHTML = '';
+  queryItem=item;
+  window.location.href = `${search_page}?q=${item}`;
+}
+
+
+
+
+
+//document.addEventListener('DOMContentLoaded', () => {
+  
+  
+  
+  function activateMainButton(){
+    if (selected_id==''){
+    window.Telegram.WebApp.MainButton.setText('Select or Swipe Over Item');
+  }
+  else{
+    window.Telegram.WebApp.MainButton.setText('Stream Now');
+    window.Telegram.WebApp.MainButton.enable();
+  }
+  window.Telegram.WebApp.MainButton.show();
+  }
+  function onMainButtonClick() {
+        //evt.preventDefault();
+        
+        //const data = JSON.stringify(selected_id);
+      if (selected_id==''){
+        window.Telegram.WebApp.showAlert('Select a Item');
+      }
+      else {
+        Telegram.WebApp.showPopup({
+                title  : 'Selet Audio or Video',
+                message: 'Select audio to stream as audio or select video to stream as video ',
+                buttons: [
+                    {id: 'audio', type: 'destructive', text: 'Audio'},
+                    {id: 'video', type: 'default', text: 'Video'},
+                    {type: 'cancel'},
+                ]
+            }, function (buttonId) {
+                if (buttonId === 'audio') {
+                    msg=`a ${selected_id}`;
+                    window.Telegram.WebApp.sendData(JSON.stringify(msg));
+                    selected_id='';
+                    Telegram.WebApp.close();
+                } else if (buttonId === 'video') {
+                    msg=`v ${selected_id}`;
+                    window.Telegram.WebApp.sendData(JSON.stringify(msg));
+                    selected_id='';
+                    Telegram.WebApp.close();
+                    //Telegram.WebApp.openLink('https://telegram.org/faq');
+                }
+            });
+          }
+        //window.Telegram.WebApp.sendData(data);
+     
+    
+  }
+
+function main(){  
+  var selectableDivs = document.querySelectorAll('.file-name');
+  window.Telegram.WebApp.ready();
+  activateMainButton();
+  selectableDivs.forEach(div => {
+    /*div.addEventListener("touchmove", function(event) {
+            onMainButtonClick(); // Change color on touch move
+              console.log('Touch move:', event);
+          });*/
+      
+      div.removeEventListener('click',()=>{console.log('')})
+      div.addEventListener('click', () => {
+          // Remove the 'selected' class from all divs
+          selectableDivs.forEach(d => d.classList.remove('selected'));
+
+          // Add 'selected' class to the clicked div
+          div.classList.add('selected');
+
+          activateMainButton();
+          window.Telegram.WebApp.expand();
+          selected_id=div.id;
+          
+          // Get and print the ID of the selected div
+          console.log('Selected div ID:', div.id);
+          
+      });
+      onSwipeFunction(div);
+  });
+  
+  //window.Telegram.WebApp.onEvent('mainButtonClicked', onMainButtonClick);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  
+  ////////// hide suggesation box ////////
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.search_section')) {
+        suggestions.style.display = 'none';
+    }
+  });
+/////////////// search box event suggesation show////////
+  document.getElementById('searchBox').addEventListener('input', function() {
+          let query = this.value;
+          
+          //console.log(url);
+          if (query.length > 0) {
+            suggestions.style.display = 'block';
+              fetch(`${searchSuggest}?q=${query}`)
+                  .then(response => response.json())
+                  .then(data => {
+                      //const resultsDiv = document.getElementById('autocompleteResults');
+                      suggestions.innerHTML = '';
+                      data[1].forEach(item => {
+                          const div = document.createElement('li');
+                          //div.classList.add('autocomplete-suggestion');
+                          div.textContent = item;
+                          div.addEventListener('click', () => {
+                              document.getElementById('searchBox').value = item;
+                              performSearch(item);;
+                          });
+                          suggestions.appendChild(div);
+                      });
+                  });
+          }
+          else if(query===''){
+            suggestions.innerHTML='';
+            suggestions.style.display = 'none';
+            
+
+          }
+           else {
+              document.getElementById('suggestions').innerHTML = '';
+              suggestions.style.display = 'none';
+          }
+      });
+      /////////// on input enter ///////
+      document.getElementById('searchBox').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent form submission if inside a form
+                const query = this.value.trim();
+                if (query) {
+                    performSearch(query);
+                }
+            }
+      });
+
+
+
+
+
+  main();
+});
+
+
+
+
+
+window.onload = function() {
+  
+    var selectableDivs = document.querySelectorAll('.file-name');
+    var loadingDivs = document.querySelectorAll('.demo-video-card');
+    // Show the div
+    //setTimeout(() => {
+      loadingDivs.forEach(loadingDiv=>{
+        loadingDiv.classList.add('fade-out'); // Add class to start fade-out animation
+        setTimeout(() => {
+            loadingDiv.style.display = 'none';
+            selectableDivs.forEach(div=>{
+                  div.style.display='flex';
+                }) // Hide the div after animation
+            }, 1500);
+        }) // Match the animation duration
+   // }, 1000); // Delay before starting the fade-out animation
+};
+
+
+window.addEventListener('scroll', () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+         fetchMoreResults();
+         //main();
+     }
+ });
+//});
+
+
+
+
+
+
+  </script>
+</html>

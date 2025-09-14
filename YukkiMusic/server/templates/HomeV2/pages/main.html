@@ -1,0 +1,33 @@
+
+<div id="touchArea" class="touchable">Touch Me!</div>
+
+
+
+<script>
+    // Get the touch area element
+    const touchArea = document.getElementById('touchArea');
+
+// Add touchstart event listener
+touchArea.addEventListener('touchstart', function(event) {
+    touchArea.style.backgroundColor = 'lightgreen'; // Change color on touch start
+    console.log('Touch start:', event);
+});
+
+// Add touchmove event listener
+touchArea.addEventListener('touchmove', function(event) {
+    touchArea.style.backgroundColor = 'lightcoral'; // Change color on touch move
+    console.log('Touch move:', event);
+});
+
+// Add touchend event listener
+touchArea.addEventListener('touchend', function(event) {
+    touchArea.style.backgroundColor = 'lightblue'; // Change color on touch end
+    console.log('Touch end:', event);
+});
+
+// Add touchcancel event listener
+touchArea.addEventListener('touchcancel', function(event) {
+    touchArea.style.backgroundColor = 'lightgray'; // Change color on touch cancel
+    console.log('Touch cancel:', event);
+});
+</script>

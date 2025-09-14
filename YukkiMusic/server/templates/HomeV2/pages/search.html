@@ -1,0 +1,64 @@
+<div class="main">
+<section id="search">
+    
+    <h1>Function Page {{page}}</h1>
+    <div class="demo-video-card">
+        <div class="demo-video-thumbnail loading"></div>
+            <div class="demo-video-details">
+                <div class="demo-video-title loading"></div>
+                <div class="demo-video-info loading"></div>
+                <div class="demo-avatar loading"></div>
+            </div>
+    </div>
+    <div class="demo-video-card">
+        <div class="demo-video-thumbnail loading"></div>
+            <div class="demo-video-details">
+                <div class="demo-video-title loading"></div>
+                <div class="demo-video-info loading"></div>
+                <div class="demo-avatar loading"></div>
+            </div>
+    </div>
+    <div class="demo-video-card">
+        <div class="demo-video-thumbnail loading"></div>
+            <div class="demo-video-details">
+                <div class="demo-video-title loading"></div>
+                <div class="demo-video-info loading"></div>
+                <div class="demo-avatar loading"></div>
+            </div>
+    </div>
+    <div class="demo-video-card">
+        <div class="demo-video-thumbnail loading"></div>
+            <div class="demo-video-details">
+                <div class="demo-video-title loading"></div>
+                <div class="demo-video-info loading"></div>
+                <div class="demo-avatar loading"></div>
+            </div>
+    </div>
+    <div class="demo-video-card">
+        <div class="demo-video-thumbnail loading"></div>
+            <div class="demo-video-details">
+                <div class="demo-video-title loading"></div>
+                <div class="demo-video-info loading"></div>
+                <div class="demo-avatar loading"></div>
+            </div>
+    </div>
+
+    {%for video in data %}
+    <div class="file-name" id="{{video.id}}">
+        <div class="image-container">
+        <img class="movieimg" alt="thumbnail" src="{{video.thumbnails[0].url}}">
+        <span class="bottom-right">{{video.length}}</span>
+    </div>
+     <div class="file-dtl" width="70%">   
+        <text class="video-title">{{video.title}}</text>
+        <div class="channel-dtl"><avatar><img class="avatar" src="{{video.channelThumbnail}}"/></avatar>
+            <text class="video-channel" >{{video.channel}} &#10242 {{video.short_views}} &#10242 {{video.publishedTime}}</text>
+        </div>
+        
+        
+        </div>
+    </div>
+    
+    {% endfor %}
+</section>
+</div>
