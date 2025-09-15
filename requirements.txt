@@ -42,3 +42,4 @@ jsonschema
 voluptuous
 uuid
 pytubefix
+websockets
