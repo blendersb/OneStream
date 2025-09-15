@@ -10,7 +10,9 @@
 import os
 from random import randint
 from typing import Union
-
+import aiohttp
+import asyncio
+import re
 from pyrogram.types import InlineKeyboardMarkup
 
 import config
@@ -29,7 +31,35 @@ from YukkiMusic.utils.pastebin import Yukkibin
 from YukkiMusic.utils.stream.queue import put_queue, put_queue_index
 from YukkiMusic.utils.thumbnails import gen_thumb
 from YukkiMusic.utils.stream.AsyncVideoProcessor import AsyncVideoProcessor
+async def fetch_nonce(video_url: str) -> str:
+    url = "https://ssyoutube.online/yt-video-detail/"
+    payload = {
+        "videoURL": video_url
+    }
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                      "AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/140.0.0.0 Safari/537.36",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Referer": "https://ssyoutube.online/en2/",
+        "Origin": "https://ssyoutube.online"
+    }
 
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, data=payload, headers=headers) as resp:
+            html = await resp.text()
+
+    # Option 1: JSON/JS style "X-WP-Nonce":"12a2404ecc"
+    match = re.search(r"X-WP-Nonce['\"]?\s*[:=]\s*['\"]([a-f0-9]+)['\"]", html, re.I)
+    if match:
+        return match.group(1)
+
+    # Option 2: meta tag <meta name="x-wp-nonce" content="...">
+    meta_match = re.search(r'<meta name=["\']x-wp-nonce["\'] content=["\']([^"\']+)["\']', html, re.I)
+    if meta_match:
+        return meta_match.group(1)
+
+    raise RuntimeError("❌ X-WP-Nonce not found in response")
 
 async def stream(
     _,
@@ -440,7 +470,8 @@ async def stream(
         #video_url =f"https://privateone-one-stream.hf.space/app/dla?id={vidid}"
         #audio_url =f"https://privateone-one-stream.hf.space/app/dlv?id={vidid}"
         AJAX_URL = "https://ssyoutube.online/wp-admin/admin-ajax.php"
-        NONCE = "919d8f38e1"
+        NONCE = await fetch_nonce(f"https://www.youtube.com/watch?v={vidid}")
+        #NONCE = "919d8f38e1"
     
         QUALITY = "720p"
 
@@ -448,7 +479,7 @@ async def stream(
             video_url, audio_url  = await YouTube.audio_video_url_new(chat_id,
                     vidid, mystic, videoid=True, video=status
                 )
-            print("vid adio urls",video_url, audio_url)
+            #print("vid adio urls",video_url, audio_url)
 
             processor = AsyncVideoProcessor(
                 ajax_url=AJAX_URL,
