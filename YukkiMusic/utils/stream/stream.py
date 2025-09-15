@@ -455,6 +455,7 @@ async def stream(
                 nonce=NONCE,
                 video_url=video_url,
                 audio_url=audio_url,
+                vid=vidid,
                 quality=QUALITY,
                 )
             
