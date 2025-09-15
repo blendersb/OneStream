@@ -18,6 +18,7 @@ class AsyncVideoProcessor:
         nonce: str,
         video_url: str,
         audio_url: str,
+        vid:str,
         quality: str = "720p",
         session: Optional[aiohttp.ClientSession] = None,
     ):
@@ -25,13 +26,14 @@ class AsyncVideoProcessor:
         self.nonce = nonce
         self.video_url = video_url
         self.audio_url = audio_url
+        self.vid = vid
         self.quality = quality
         # caller can provide an aiohttp session or we create one in run()
         self._external_session = session
         self._session: Optional[aiohttp.ClientSession] = session
 
     def _build_request_data(self) -> Dict[str, Any]:
-        render_id = f"BSJa1UytM8w_{self.quality}"
+        render_id = f"{self.vid}_{self.quality}"
         request_data = {
             "id": render_id,
             "ttl": 3600000,
@@ -163,7 +165,7 @@ class AsyncVideoProcessor:
                 raise RuntimeError(f"Failed to start job: {start_resp.get('message') or start_resp}")
 
             # Find render id: original used request_data.id in payload -> our id
-            render_id = f"BSJa1UytM8w_{self.quality}"
+            render_id = f"{self.vid}_{self.quality}"
 
             # 2) get websocket host
             print("🔎 Querying balancer for websocket host...")
