@@ -474,7 +474,7 @@ class YouTubeAPI:
         except Exception:
             return 0
 
-    async def pick_video_audio_urls(formats: List[Dict[str, Any]]) -> Dict[str, Optional[Dict[str, Any]]]:
+    async def pick_video_audio_urls(self,formats: List[Dict[str, Any]]) -> Dict[str, Optional[Dict[str, Any]]]:
         """
         Given a list of format dicts (each dict like your examples), return a mapping:
         {
