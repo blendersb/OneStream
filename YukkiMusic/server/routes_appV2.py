@@ -92,8 +92,21 @@ async def nextPage(request):
     
 async def searchquery(request):
     query = request.query.get('q', '').lower()
+    url = f"http://suggestqueries.google.com/complete/search?client=firefox&q={query}"
+
+    async with ClientSession() as session:
+        async with session.get(url) as resp:
+            assert resp.status == 200
+            text = await resp.text()
+
+            try:
+                data = json.loads(text)
+                return data[1]   # Suggestions list
+            except json.JSONDecodeError:
+                print("Failed to parse JSON:", text)
+                return []
     
-    async with request_n.request('GET',
+    '''async with request_n.request('GET',
             f'https://cors-handlers.vercel.app/api/?url=http%3A%2F%2Fsuggestqueries.google.com%2Fcomplete%2Fsearch%3Fclient%3Dfirefox%26ds%3Dyt%26q={query}') as resp:
         assert resp.status == 200
         #print(await resp.text())
@@ -106,7 +119,7 @@ async def searchquery(request):
             #data=await resp.text()
     #print(data)
     #return web.Response(text=data)
-    #return query
+    #return query'''
 
 #@sub_app.get("/up", allow_head=True)
 @aiohttp_jinja2.template("index.html")    
@@ -180,7 +193,7 @@ sub_appV2.router.add_get('/searchquery',searchquery,name='searchquery')
 sub_appV2.router.add_get('/search', Search_Component, name='search')
 sub_appV2.router.add_get('/playlist', Playlist_Component)
 sub_appV2.router.add_get('/functions', Function_Component, name='functions')
-sub_appV2.router.add_get('/nextPage', nextPage, name='nextPage')
+#sub_appV2.router.add_get('/nextPage', nextPage, name='nextPage')
 sub_appV2.router.add_get('/scroll', Scroll_Component, name='scroll')
 
 

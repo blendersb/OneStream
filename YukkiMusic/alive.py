@@ -148,7 +148,7 @@ def web_server():
     web_app = web.Application(client_max_size=500)
     web_app.router.add_get('/', root_route_handler)
     web_app.router.add_get('/dl/{path}', stream_handler)
-    web_app.router.add_get('/yt', render_youtube)
+    #web_app.router.add_get('/yt', render_youtube)
     web_app.router.add_get('/post', post_method)
     web_app.add_subapp('/app', sub_app)
     web_app['sub_app'] = sub_app

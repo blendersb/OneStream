@@ -21,7 +21,7 @@ from pyrogram.raw import functions, types
 from pytube import extract
 import config
 import json 
-from config import BANNED_USERS, lyrical
+from config import BANNED_USERS, lyrical,WEBAPP_URI
 from strings import get_command
 from pyrogram.enums import ParseMode, ChatType
 from YukkiMusic import (Apple, Resso, SoundCloud, Spotify, Telegram,
@@ -59,7 +59,7 @@ async def send_webapp_button(client,message: Message):
     
     custom_keyboard = ReplyKeyboardMarkup(
         [
-            [KeyboardButton("Open WebApp", web_app=WebAppInfo(url="https://privateone-one-stream.hf.space/appV2/home"))]
+            [KeyboardButton("Open WebApp", web_app=WebAppInfo(url=WEBAPP_URI))]
         ],
         resize_keyboard=True  # Optional: resize the keyboard to fit the screen
     )

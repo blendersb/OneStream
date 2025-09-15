@@ -93,15 +93,19 @@ async def nextPage(request):
     
 async def searchquery(request):
     query = request.query.get('q', '').lower()
-    async with request_n.request('GET',
-            f'https://cors-handlers.vercel.app/api/?url=http%3A%2F%2Fsuggestqueries.google.com%2Fcomplete%2Fsearch%3Fclient%3Dfirefox%26ds%3Dyt%26q={query}') as resp:
-        assert resp.status == 200
-        #print(await resp.text())
-    #async with session.get(f'https://cors-handlers.vercel.app/api/?url=http%3A%2F%2Fsuggestqueries.google.com%2Fcomplete%2Fsearch%3Fclient%3Dfirefox%26ds%3Dyt%26q={query}') as resp:
-        data=await resp.text()
-    #print(data)
-    #return web.Response(text=query)
-    return web.Response(text=data)
+    url = f"http://suggestqueries.google.com/complete/search?client=firefox&q={query}"
+
+    async with ClientSession() as session:
+        async with session.get(url) as resp:
+            assert resp.status == 200
+            text = await resp.text()
+
+            try:
+                data = json.loads(text)
+                return data[1]   # Suggestions list
+            except json.JSONDecodeError:
+                print("Failed to parse JSON:", text)
+                return []
 
 
 async def download_file_in_chunks(url):

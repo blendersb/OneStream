@@ -17,7 +17,7 @@ from pyrogram.types import (InlineKeyboardMarkup, InputMediaPhoto,
 from pytgcalls.exceptions import NoActiveGroupCall
 from pytube import extract
 import config
-from config import BANNED_USERS, lyrical
+from config import BANNED_USERS, lyrical,MAIN_URL
 from strings import get_command
 from YukkiMusic import (Apple, Resso, SoundCloud, Spotify, Telegram,
                         YouTube, app)
@@ -88,7 +88,7 @@ async def play_commnd(
         
         if (len(message.command) > 1) and (message.command[1].lower()== 'direct') :
             direct=True
-            file_path = f"https://privateone-one-stream.hf.space/dl/{message.reply_to_message_id}"
+            file_path = f"{MAIN_URL}/dl/{message.reply_to_message_id}"
             print(file_path)
         else:
             if (audio_telegram.file_size > config.TG_AUDIO_FILESIZE_LIMIT) and (len(message.command) < 2) :
@@ -155,7 +155,7 @@ async def play_commnd(
                     _["play_8"].format(f"{' | '.join(formats)}")
                 )
         if (len(message.command) > 1) and (message.command[1].lower()== 'direct') :
-            file_path = f"https://privateone-one-stream.hf.space/dl/{message.reply_to_message_id}"
+            file_path = f"{MAIN_URL}/dl/{message.reply_to_message_id}"
             direct=True
             print(file_path)
         else:
