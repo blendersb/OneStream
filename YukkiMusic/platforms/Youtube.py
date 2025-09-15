@@ -580,7 +580,7 @@ class YouTubeAPI:
         loop = asyncio.get_running_loop()
         strem_list = await search_player_data_with_post_api(video_id)
         chosen = await self.pick_video_audio_urls(strem_list)
-        #print(strem_list, videodetails)
+        print("raw list",strem_list, chosen)
         def get_video_url():
             mode=video_settings.get(chat_id)
             if str(mode) == "High":
