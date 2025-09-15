@@ -518,7 +518,7 @@ class YouTubeAPI:
                     ext = (f.get("ext") or "").lower()
                     if ext in ("mp4"):
                         video_formats.append(f_copy)
-                    elif ext in ("opus","m4a"):
+                    elif ext in ("m4a"):
                         audio_formats.append(f_copy)
                     else:
                         # if still ambiguous, put into video if it has height, else audio if no height
@@ -623,5 +623,5 @@ class YouTubeAPI:
         audio_url = await loop.run_in_executor(
                     None, get_audio_url
                 )
-        print("video_url:",audio_url,"\n audio_url:",video_url )
-        return  audio_url,video_url
+        print("video_url:",video_url,"\n audio_url:",audio_url )
+        return  video_url,audio_url
