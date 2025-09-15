@@ -25,6 +25,6 @@ RUN chmod +x /start_vpn.sh
 
 RUN pip3 install --no-cache-dir --upgrade --requirement requirements.txt
 # Run the VPN script when the container starts
-
+EXPOSE 7860
 #CMD ["sh","/start_vpn.sh"]
 CMD ["python", "-u","-m", "YukkiMusic"]
