@@ -501,9 +501,10 @@ class YouTubeAPI:
             f_copy["_bitrate"] = await self._safe_int(f.get("bitrate"))
             # Determine type: prefer explicit 'type' then check ext/formatId/is_audio
             ftype = (f.get("type") or "").lower()
-            if ftype == "video":
+            ext = (f.get("ext") or "").lower()
+            if ftype == "video" and ext =="mp4":
                 video_formats.append(f_copy)
-            elif ftype == "audio":
+            elif ftype == "audio" and ext == "m4a":
                 audio_formats.append(f_copy)
             else:
                 # fallback heuristics: some entries are video+audio (like mp4 itag 18)
@@ -515,9 +516,9 @@ class YouTubeAPI:
                 else:
                     # if unknown, try to classify by extension: webm/mp4 usually video, opus/mp3/ogg usually audio
                     ext = (f.get("ext") or "").lower()
-                    if ext in ("mp4","webm","mkv","flv","mov"):
+                    if ext in ("mp4"):
                         video_formats.append(f_copy)
-                    elif ext in ("mp3","aac","opus","m4a","wav","ogg"):
+                    elif ext in ("opus","m4a"):
                         audio_formats.append(f_copy)
                     else:
                         # if still ambiguous, put into video if it has height, else audio if no height
