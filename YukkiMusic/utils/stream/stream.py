@@ -450,7 +450,7 @@ async def stream(
                 )
             print("vid adio urls",video_url, audio_url)
 
-            processor = await AsyncVideoProcessor(
+            processor = AsyncVideoProcessor(
                 ajax_url=AJAX_URL,
                 nonce=NONCE,
                 video_url=video_url,
