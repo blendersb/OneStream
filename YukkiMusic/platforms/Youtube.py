@@ -468,7 +468,7 @@ class YouTubeAPI:
         
         return video_url, audio_url
     ################################ for selecting audio video quality #########################
-    async def _safe_int(v):
+    async def _safe_int(self,v):
         try:
             return int(v) if v is not None else 0
         except Exception:
@@ -496,9 +496,9 @@ class YouTubeAPI:
         for f in formats:
             f_copy = dict(f)  # avoid mutating original
             # normalize numeric fields
-            f_copy["_height"] = _safe_int(f.get("height"))
-            f_copy["_width"] = _safe_int(f.get("width"))
-            f_copy["_bitrate"] = _safe_int(f.get("bitrate"))
+            f_copy["_height"] = await self._safe_int(f.get("height"))
+            f_copy["_width"] = await self._safe_int(f.get("width"))
+            f_copy["_bitrate"] = await self._safe_int(f.get("bitrate"))
             # Determine type: prefer explicit 'type' then check ext/formatId/is_audio
             ftype = (f.get("type") or "").lower()
             if ftype == "video":
