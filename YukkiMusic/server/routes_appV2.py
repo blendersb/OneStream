@@ -96,7 +96,21 @@ async def searchquery(request):
 
     async with ClientSession() as session:
         async with session.get(url) as resp:
-            assert resp.status == 200
+            # If remote returns non-200, return empty list or forward error
+            if resp.status != 200:
+                return web.json_response([], status=resp.status)
+
+            text = await resp.text()
+
+            try:
+                data = json.loads(text)
+                suggestions = data[1] if isinstance(data, list) and len(data) > 1 else []
+                # Return an actual aiohttp Response (JSON)
+                return web.json_response(suggestions)
+            except json.JSONDecodeError:
+                # sometimes the remote may respond with invalid JSON; return empty array
+                return web.json_response([], status=200)
+            '''assert resp.status == 200
             text = await resp.text()
 
             try:
@@ -104,7 +118,7 @@ async def searchquery(request):
                 return data[1]   # Suggestions list
             except json.JSONDecodeError:
                 print("Failed to parse JSON:", text)
-                return []
+                return []'''
     
     '''async with request_n.request('GET',
             f'https://cors-handlers.vercel.app/api/?url=http%3A%2F%2Fsuggestqueries.google.com%2Fcomplete%2Fsearch%3Fclient%3Dfirefox%26ds%3Dyt%26q={query}') as resp:
