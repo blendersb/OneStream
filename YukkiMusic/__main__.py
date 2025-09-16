@@ -99,12 +99,12 @@ async def cleanup():
         print("Web server stopped.")
 
     print("Stopping clients...")
-    if Yukki.is_initialized:
+    if app.is_initialized:
         print("Main client stopped.")
         #userbot.leave_chat(message.chat.id)
         
         print("User bot stopped.")
-        await Yukki.stop()
+        await app.stop()
         print("User bot stopped.")
         await userbot.stop()
     
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     LOGGER("YukkiMusic").info("Stopping Yukki Music Bot! GoodBye")'''
     try:
         loop.run_until_complete(init())
-        loop.run_forever()
+        #loop.run_forever()
     except (KeyboardInterrupt, SystemExit):
         print("------------------------ Services Stopped ------------------------")
         if not loop.is_closed():
@@ -135,7 +135,7 @@ if __name__ == "__main__":
                 loop.close()
     except Exception as e:
         LOGGER("YukkiMusic").info("Stopping Yukki Music Bot! GoodBye")
-        LOGGER.info(f"An unexpected error occurred: {e}", exc_info=True)
+        LOGGER(f"An unexpected error occurred: {e}", exc_info=True)
     finally:
         if not loop.is_closed():
             loop.run_until_complete(cleanup())
