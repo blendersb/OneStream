@@ -27,13 +27,13 @@ def videoDetails(vid):
     video_id=check_youtube_string(vid)
     if video_id != None:
         data = client.player(video_id)
-        return data["videoDetails"]
+        return data.get("videoDetails",{})
     
 def streamingData(vid):
     video_id=check_youtube_string(vid)
     if video_id != None:
         data = client.player(video_id)
-        return data["streamingData"]["adaptiveFormats"]
+        return data.get("streamingData",{}).get("adaptiveFormats",[])
 
 
 # Fetch the player data for the video
