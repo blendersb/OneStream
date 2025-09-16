@@ -359,6 +359,7 @@ class Call(PyTgCalls):
                 MediaStream(
                   media_path=link,
                   audio_parameters=audio_stream_quality,
+                  video_flags=MediaStream.Flags.IGNORE,
                 ),
                 #stream_type=StreamType().pulse_stream,
             )
@@ -454,6 +455,7 @@ class Call(PyTgCalls):
                   MediaStream(
                     media_path=audio_url,
                     audio_parameters=audio_stream_quality,
+                    video_flags=MediaStream.Flags.IGNORE,
                   ),
                   #stream_type=StreamType().pulse_stream,
               )
