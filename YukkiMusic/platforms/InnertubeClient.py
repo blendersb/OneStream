@@ -27,6 +27,7 @@ def videoDetails(vid):
     video_id=check_youtube_string(vid)
     if video_id != None:
         data = client.player(video_id)
+        print(data.get("videoDetails",{}))
         return data.get("videoDetails",{})
     
 def streamingData(vid):
