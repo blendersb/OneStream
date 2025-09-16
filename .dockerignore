@@ -2,11 +2,11 @@
 .cache
 Yukkilogs.txt
 .DS_Store
-*.session
+#*.session
 raw_files/
 cache/
 downloads/
 __pycache__/
-*.session-journal
-*.session-shm
-*.session-wal
+#*.session-journal
+#*.session-shm
+#*.session-wal
