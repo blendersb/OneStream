@@ -6,7 +6,7 @@
 # Please see < https://github.com/TeamYukki/YukkiMusicBot/blob/master/LICENSE >
 #
 # All rights reserved.
-
+import os
 import asyncio
 import importlib
 import sys
@@ -115,9 +115,10 @@ async def cleanup():
         print("Web server stopped.")
 
     print("Stopping clients...")
-    if getattr(app, "is_initialized", False):
+    if app.is_initialized:
         await app.stop()
         print("Main client stopped.")
+        #await Yukki.stop()
         #userbot.leave_chat(message.chat.id)
         print("User bot stopped.")
         await userbot.stop()
@@ -143,16 +144,20 @@ if __name__ == "__main__":
         #loop.run_forever()
     except (KeyboardInterrupt, SystemExit):
         print("------------------------ Services Stopped ------------------------")
-        if not loop.is_closed():
-                loop.run_until_complete(cleanup())
-                loop.run_until_complete(loop.shutdown_asyncgens())
-                loop.close()
+        
     except Exception as e:
         LOGGER("YukkiMusic").info(f"Stopping Yukki Music Bot! GoodBye--{e}")
         #LOGGER(f"An unexpected error occurred: {e}", exc_info=True)
     finally:
-        if not loop.is_closed():
+        try:
+            # Run cleanup safely
             loop.run_until_complete(cleanup())
             loop.run_until_complete(loop.shutdown_asyncgens())
-            loop.close()
+        except Exception as e:
+            print("Error while running cleanup in finally:", e)
+        finally:
+            if not loop.is_closed():
+                loop.close()
             print("Application closed.")
+            sys.exit(0)   # <-- Clean exit
+            #os._exit(0)
