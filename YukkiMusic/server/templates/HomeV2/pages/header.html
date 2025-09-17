@@ -285,9 +285,10 @@ function main(){
           
       });
       onSwipeFunction(div);
+      ///onMainButtonClick
   });
   
-  //window.Telegram.WebApp.onEvent('mainButtonClicked', onMainButtonClick);
+  window.Telegram.WebApp.onEvent('mainButtonClicked', onMainButtonClick);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
