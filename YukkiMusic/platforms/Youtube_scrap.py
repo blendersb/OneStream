@@ -8,6 +8,7 @@ import asyncio
 import aiohttp
 from config import PROXY_USER,PROXY_PASS,PROXY_IP,PROXY_PORT
 from pytubefix.innertube import InnerTube
+from typing import Any, Dict, Optional
 #res = requests.get('https://www.youtube.com/')
 
 async def extract_json_tranding(data):
@@ -116,6 +117,52 @@ async def search_videos(query):
             searchresult_list.append(details)
     #print(url,searchresult_list)
     return searchresult_list
+########################################### extract continuation token from search_videos_with_post_api ###############################
+
+
+def extract_next_page_token(json_data: Dict[str, Any]) -> Optional[str]:
+    """
+    Safely extract continuation token from youtube search JSON.
+    Returns the token string or None if not present.
+    """
+    if not isinstance(json_data, dict):
+        return None
+
+    contents = (
+        json_data.get("contents", {})
+                 .get("twoColumnSearchResultsRenderer", {})
+                 .get("primaryContents", {})
+                 .get("sectionListRenderer", {})
+                 .get("contents", [])
+    )
+
+    # ensure we have at least 2 items in contents (contents[1] is expected to hold continuation)
+    if not isinstance(contents, list) or len(contents) <= 1:
+        return None
+
+    second = contents[1]  # safe now
+    if not isinstance(second, dict):
+        return None
+
+    cont_item = second.get("continuationItemRenderer")
+    if not isinstance(cont_item, dict):
+        return None
+
+    endpoint = cont_item.get("continuationEndpoint", {})
+    if not isinstance(endpoint, dict):
+        return None
+
+    # continuationCommand may or may not exist (some formats use different keys),
+    # so try common locations defensively.
+    command = endpoint.get("continuationCommand", {})
+    token = None
+    if isinstance(command, dict):
+        token = command.get("token")
+    if not token:
+        # sometimes token may be directly under continuationEndpoint (less common)
+        token = endpoint.get("token")
+
+    return token  # either string or None
 
 async def search_videos_with_post_api(query):
     searchresult_list=[]
@@ -161,11 +208,13 @@ async def search_videos_with_post_api(query):
                     {}).get('contents', [])[0].get('itemSectionRenderer',
                                                    {}).get('contents', [])
     
-    nextPageToken = json_data['contents']['twoColumnSearchResultsRenderer']['primaryContents']['sectionListRenderer']['contents'][1]['continuationItemRenderer']['continuationEndpoint']['continuationCommand']['token'] if json_data.get('contents', {}).get(
+    '''nextPageToken = json_data['contents']['twoColumnSearchResultsRenderer']['primaryContents']['sectionListRenderer']['contents'][1]['continuationItemRenderer']['continuationEndpoint']['continuationCommand']['token'] if json_data.get('contents', {}).get(
     'twoColumnSearchResultsRenderer',
     {}).get('primaryContents',
             {}).get('sectionListRenderer',
                     {}).get('contents', [])[1].get('continuationItemRenderer',{}).get('continuationEndpoint',{}).get('continuationCommand',{}).get('token','') else None
+    '''
+    nextPageToken = extract_next_page_token(json_data)
     
 
 
