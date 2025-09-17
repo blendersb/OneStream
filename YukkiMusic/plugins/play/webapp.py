@@ -96,7 +96,7 @@ async def raw_update_handler(client, message: Message):
             details, track_id = await YouTube.track(id,True)
         except Exception:
                 print(traceback.print_exc())
-                return await client.send_message(user_idx,f"{_["play_3"]}\n Try with another song")
+                return await client.send_message(user_idx,f"{_['play_3']}\n Try with another song")
         streamtype = "nodownload"
         img = details["thumb"]
         cap = _["play_19"].format(
