@@ -34,7 +34,7 @@ async def inline_query_handler(client, query):
        # result = (await a.next()).get("result")
         result,token=await search_videos_with_post_api(text)
 
-        for x in range(15):
+        for x in range(len(result)):
             title = result[x].get("title","")
             duration = result[x].get("length","") if not None else 0
             views = result[x].get("views","")
