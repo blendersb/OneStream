@@ -4,7 +4,7 @@ from typing import Optional, Dict, Any
 
 import aiohttp
 import websockets
-
+from config import BALANCER_URL
 
 class AsyncVideoProcessor:
     """
@@ -15,19 +15,23 @@ class AsyncVideoProcessor:
     def __init__(
         self,
         ajax_url: str,
+        title: str,
         nonce: str,
         video_url: str,
         audio_url: str,
         vid:str,
         quality: str = "720p",
         session: Optional[aiohttp.ClientSession] = None,
+        
     ):
         self.ajax_url = ajax_url
+        self.title = title
         self.nonce = nonce
         self.video_url = video_url
         self.audio_url = audio_url
         self.vid = vid
         self.quality = quality
+        
         # caller can provide an aiohttp session or we create one in run()
         self._external_session = session
         self._session: Optional[aiohttp.ClientSession] = session
@@ -51,7 +55,7 @@ class AsyncVideoProcessor:
             ],
             "output": {
                 "ext": "mp4",
-                "downloadName": f"Processed_{self.quality}.mp4",
+                "downloadName": f"{self.title}_{self.quality}.mp4",
                 "chunkUpload": {"size": 1024 * 1024 * 200, "concurrency": 3},
             },
             "operation": {"type": "replace_audio_in_video"},
@@ -93,7 +97,8 @@ class AsyncVideoProcessor:
         Call the balancer URL to get a websocket host (the original used fastytcdn balancer).
         This call returns raw host text in the original script.
         """
-        balancer_url = "https://balancer-v2.fastytcdn.com/get-server"
+        #balancer_url = "https://balancer-v2.fastytcdn.com/get-server"
+        balancer_url=BALANCER_URL
         session_created = False
         if self._session is None:
             self._session = aiohttp.ClientSession()

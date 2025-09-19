@@ -469,7 +469,8 @@ async def stream(
         status = True if video else None
         #video_url =f"https://privateone-one-stream.hf.space/app/dla?id={vidid}"
         #audio_url =f"https://privateone-one-stream.hf.space/app/dlv?id={vidid}"
-        AJAX_URL = "https://ssyoutube.online/wp-admin/admin-ajax.php"
+        #AJAX_URL = "https://ssyoutube.online/wp-admin/admin-ajax.php"
+        AJAX_URL = config.AJAX_URL
         NONCE = await fetch_nonce(f"https://www.youtube.com/watch?v={vidid}")
         #NONCE = "919d8f38e1"
     
@@ -483,11 +484,13 @@ async def stream(
 
             processor = AsyncVideoProcessor(
                 ajax_url=AJAX_URL,
+                title=title,
                 nonce=NONCE,
                 video_url=video_url,
                 audio_url=audio_url,
                 vid=vidid,
                 quality=QUALITY,
+                
                 )
             
             result = await processor.run()

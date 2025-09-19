@@ -43,20 +43,27 @@ class YukkiBot(Client):
     if config.SET_CMDS == str(True):
       try:
         await self.set_bot_commands([
-            BotCommand("ping", "Check that bot is alive or dead"),
-            BotCommand("play", "Starts playing the requested song"),
-            BotCommand("webapp",
-                       "Open webapp of the music bot for your chat."),
-            BotCommand("skip", "Moves to the next track in queue"),
-            BotCommand("pause", "Pause the current playing song"),
+            BotCommand("start","ꜱᴛᴀʀᴛ ᴛʜᴇ ʙᴏᴛ"),
+            BotCommand("play", "ᴘʟᴀʏ ᴀꜱ ᴀᴜᴅɪᴏ"),
+            BotCommand("vplay", "ᴘʟᴀʏ ᴀꜱ ᴠɪᴅᴇᴏ"),
+            BotCommand("pause", "ᴘᴀᴜꜱᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴘʟᴀʏɪɴɢ ꜱᴏɴɢ"),
             BotCommand("resume", "Resume the paused song"),
-            BotCommand("end", "Clear the queue and leave voice chat"),
-            BotCommand("shuffle", "Randomly shuffles the queued playlist."),
+            BotCommand("stop", "ʀᴇꜱᴜᴍᴇ ᴛʜᴇ ᴘᴀᴜꜱᴇᴅ ꜱᴏɴɢ"),
+            BotCommand("end", "ᴄʟᴇᴀʀ ᴛʜᴇ Qᴜᴇᴜᴇ ᴀɴᴅ ʟᴇᴀᴠᴇ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ"),
+            BotCommand("ping", "ᴄʜᴇᴄᴋ ᴛʜᴀᴛ ʙᴏᴛ ɪꜱ ᴀʟɪᴠᴇ ᴏʀ ᴅᴇᴀᴅ"),
+            BotCommand("webapp",
+                       "ᴏᴘᴇɴ ᴡᴇʙᴀᴘᴘ ᴏɴ ʏᴏᴜʀ ᴄʜᴀᴛ."),
+            BotCommand("AI", "ᴀɪ ᴄᴀʟʟ"),
+            #BotCommand("skip", "Moves to the next track in queue"),
+            
+            
+            
+            #BotCommand("shuffle", "Randomly shuffles the queued playlist."),
             BotCommand(
                 "playmode",
-                "Allows you to change the default playmode for your chat"),
+                "ᴀʟʟᴏᴡꜱ ʏᴏᴜ ᴛᴏ ᴄʜᴀɴɢᴇ ᴛʜᴇ ᴅᴇꜰᴀᴜʟᴛ ᴘʟᴀʏᴍᴏᴅᴇ ꜰᴏʀ ʏᴏᴜʀ ᴄʜᴀᴛ"),
             BotCommand("settings",
-                       "Open the settings of the music bot for your chat.")
+                       "ᴏᴘᴇɴ ᴛʜᴇ ꜱᴇᴛᴛɪɴɢꜱ ᴏꜰ ᴛʜᴇ ᴍᴜꜱɪᴄ ʙᴏᴛ ꜰᴏʀ ʏᴏᴜʀ ᴄʜᴀᴛ")
         ])
       except:
         pass

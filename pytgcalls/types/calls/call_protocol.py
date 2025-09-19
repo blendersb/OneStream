@@ -11,6 +11,11 @@ class CallProtocol:
         p2p_allowed: Optional[bool] = None,
         rtc_servers: Optional[List[RTCServer]] = None,
     ):
+        
+
         self.library_versions = library_versions
         self.p2p_allowed = p2p_allowed
         self.rtc_servers = rtc_servers
+        #parse_servers(rtc_servers)
+          # prints attributes as a dict
+        #print(rtc_servers)

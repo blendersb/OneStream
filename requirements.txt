@@ -45,3 +45,6 @@ voluptuous
 uuid
 pytubefix
 websockets
+faster-w
+numpy
+huggingface_hub[hf_xet]

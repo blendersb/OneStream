@@ -115,7 +115,7 @@ class YouTubeAPI:
             else:
                 duration_sec = int(time_to_seconds(duration_min))
                 '''
-        return title, time_to_seconds(duration_min), duration_min, thumbnail, vidid
+        return title,  duration_min, time_to_seconds(duration_min), thumbnail, vidid
 
     async def title(
         self, link: str, videoid: Union[bool, str] = None

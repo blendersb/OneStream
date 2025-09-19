@@ -24,6 +24,8 @@ API_HASH = getenv("API_HASH")
 BOT_TOKEN = getenv("BOT_TOKEN")
 WEBAPP_URI = getenv("WEBAPP_URI",'https://youtube.com')
 MAIN_URL = getenv('MAIN_URL','')
+AJAX_URL = getenv('AJAX_URL','')
+BALANCER_URL = getenv('BALANCER_URL','')
 # Database to save your chats and stats... Get MongoDB:-  https://telegra.ph/How-To-get-Mongodb-URI-04-06
 MONGO_DB_URI = getenv("MONGO_DB_URI", None)
 
@@ -136,7 +138,7 @@ TG_VIDEO_FILESIZE_LIMIT = int(
 
 # If you want your bot to setup the commands automatically in the bot's menu set it to true.
 # Refer to https://i.postimg.cc/Bbg3LQTG/image.png
-SET_CMDS = getenv("SET_CMDS", False)
+SET_CMDS = getenv("SET_CMDS", True)
 
 # You'll need a Pyrogram String Session for these vars. Generate String from our session generator bot @YukkiStringBot
 STRING1 = getenv("STRING_SESSION", None)
