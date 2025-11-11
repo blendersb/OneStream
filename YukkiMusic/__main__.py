@@ -13,7 +13,7 @@ import sys
 from aiohttp import web
 from pyrogram import idle
 from pytgcalls.exceptions import NoActiveGroupCall
-
+import signal
 import config
 from config import BANNED_USERS
 from YukkiMusic import LOGGER, app, userbot
@@ -138,12 +138,34 @@ async def cleanup():
     await asyncio.gather(*tasks, return_exceptions=True)
     if loop.is_running():
         loop.stop()
+async def restart_program():
+    """Perform a graceful restart."""
+    print("\n------------------ Restarting Program ------------------")
+    await cleanup()
+    python = sys.executable
+    os.execl(python, python, *sys.argv)  # Replace current process
 
+
+def handle_signal(signum, frame):
+    """Handle Unix signals for restart or shutdown."""
+    if signum in (signal.SIGHUP, signal.SIGUSR1, signal.SIGUSR2):
+        logging.info(f"Received signal {signum} — performing hot restart...")
+        asyncio.run(restart_program())
+    elif signum in (signal.SIGINT, signal.SIGTERM):
+        logging.info(f"Received termination signal ({signum}) — shutting down gracefully...")
+        asyncio.run(cleanup())
+        sys.exit(0)
 if __name__ == "__main__":
     #keep_alive()
     
     '''loop.run_until_complete(init())
     LOGGER("YukkiMusic").info("Stopping Yukki Music Bot! GoodBye")'''
+    # Register signal handlers
+    signal.signal(signal.SIGHUP, handle_signal)
+    signal.signal(signal.SIGUSR1, handle_signal)
+    signal.signal(signal.SIGUSR2, handle_signal)
+    signal.signal(signal.SIGTERM, handle_signal)
+    signal.signal(signal.SIGINT, handle_signal)
     try:
         loop.run_until_complete(init())
         #loop.run_forever()
