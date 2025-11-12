@@ -23,12 +23,12 @@ jobs:
       - name: Login to Defang
         run: defang login
         
-      - name: Build Docker image
-        run: |
-          docker build -t onestream .
+      # - name: Build Docker image
+      #   run: |
+      #     docker build -t onestream .
 
-      - name: Push and Deploy to Defang Playground
-        run: |
-          defang deploy --name onestream --playground
       # - name: Push and Deploy to Defang Playground
-      #   run: defang compose up -v --detach
+      #   run: |
+      #     defang deploy --name onestream --playground
+      - name: Push and Deploy to Defang Playground
+        run: defang compose up -v --detach
