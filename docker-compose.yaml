@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  onestream:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # Port mapping for Defang Playground
+    ports:
+      - mode: ingress
+        target: 7860  # The EXPOSE port in your Dockerfile
+
+    # Ensure the container stays up
+    restart: unless-stopped
+
+    # Set working directory (matches Dockerfile)
+    working_dir: /app
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+    # If your app needs privileged access (for VPN or TUN device)
+    # ⚠️ Playground may not support this — but keep for local/docker desktop testing
+    # privileged: true
+    # cap_add:
+    #   - NET_ADMIN
