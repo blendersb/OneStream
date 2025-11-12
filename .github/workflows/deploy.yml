@@ -1,0 +1,27 @@
+name: Deploy to Defang Playground
+
+on:
+  push:
+    branches:
+      - main  # or your preferred branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    #environment: Production
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Defang CLI
+        run: . <(curl -s https://raw.githubusercontent.com/DefangLabs/defang/refs/heads/main/src/bin/install)
+          #curl -fsSL https://get.defang.io/install.sh | sh
+          #echo "${{ secrets.DEFANG_API_TOKEN }}" | defang auth login --token -
+
+      - name: Login to Defang
+        run: defang login
+
+      - name: Push and Deploy to Defang Playground
+        run: defang compose up -v --detach
