@@ -3,6 +3,7 @@ aiohttp
 asyncio
 dnspython
 datetime
+dotenv
 ffmpeg-python
 gitpython
 hachoir
