@@ -119,7 +119,24 @@ async def cleanup():
 
     if loop.is_running():
         loop.stop()
+async def cleanup_and_shutdown():
+    """Gracefully stop all running services."""
+    try:
+        if loop.is_running():
+            await cleanup()  # Call the cleanup function asynchronously
+            await loop.shutdown_asyncgens()  # Shutdown async generators
+    except Exception as e:
+        LOGGER("YukkiMusic").exception(f"Error during cleanup: {e}")
+    finally:
+        # Ensure the loop is closed if not already closed
+        if not loop.is_closed():
+            loop.close()
+        LOGGER("YukkiMusic").info("Application closed.")
+        sys.exit(0)  # Ensure clean exit
 
+def run_cleanup():
+    """Run cleanup asynchronously."""
+    asyncio.ensure_future(cleanup_and_shutdown())
 async def restart_program():
     """Perform a graceful restart of the bot."""
     LOGGER("YukkiMusic").info("------------------ Restarting Program ------------------")
@@ -152,13 +169,18 @@ if __name__ == "__main__":
     except Exception as e:
         LOGGER("YukkiMusic").exception(f"An unexpected error occurred: {e}")
     finally:
-        try:
-            await cleanup()
-            await loop.shutdown_asyncgens()
-        except Exception as e:
-            LOGGER("YukkiMusic").exception(f"Error during cleanup: {e}")
-        finally:
-            if not loop.is_closed():
-                loop.close()
-            LOGGER("YukkiMusic").info("Application closed.")
-            sys.exit(0)  # Ensure clean exit
+        # Ensure cleanup is run after everything
+        run_cleanup()
+        # try:
+        #     # Check if the loop is still running before attempting cleanup or shutdown
+        #     if loop.is_running():
+        #         await cleanup()
+        #         await loop.shutdown_asyncgens()
+        # except Exception as e:
+        #     LOGGER("YukkiMusic").exception(f"Error during cleanup: {e}")
+        # finally:
+        #     # Ensure the loop is closed if not already closed
+        #     if not loop.is_closed():
+        #         loop.close()
+        #     LOGGER("YukkiMusic").info("Application closed.")
+        #     sys.exit(0)  # Ensure clean exit
