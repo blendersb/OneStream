@@ -24,7 +24,7 @@ RUN pip3 install --no-cache-dir --upgrade --requirement requirements.txt
 EXPOSE 7860
 
 # Switch to non-root user
-USER botuser
+USER 10001
 
 # Run your bot
 CMD ["python", "-u", "-m", "YukkiMusic"]
