@@ -114,9 +114,9 @@ def handle_signal(signum, frame):
 
 if __name__ == "__main__":
     # Register signal handlers
-    for sig_name in ["SIGHUP", "SIGUSR1", "SIGUSR2", "SIGTERM", "SIGINT"]:
-        if hasattr(signal, sig_name):
-            signal.signal(getattr(signal, sig_name), handle_signal)
+    # for sig_name in ["SIGHUP", "SIGUSR1", "SIGUSR2", "SIGTERM", "SIGINT"]:
+    #     if hasattr(signal, sig_name):
+    #         signal.signal(getattr(signal, sig_name), handle_signal)
 
     try:
         loop.run_until_complete(init())  # Run the main initialization
