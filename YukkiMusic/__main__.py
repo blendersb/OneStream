@@ -1,14 +1,16 @@
 import asyncio
 import logging
+import os
 import sys
 import signal
+from config import config
 from pyrogram import idle
 from aiohttp import web
 from YukkiMusic import LOGGER, app, userbot
 from YukkiMusic.alive import web_server
 from YukkiMusic.core.call import Yukki
 from YukkiMusic.utils.database import get_banned_users, get_gbanned
-
+from pytgcalls.exceptions import NoActiveGroupCall
 logging.basicConfig(level=logging.INFO)
 loop = asyncio.get_event_loop()
 
@@ -42,10 +44,10 @@ async def init():
     try:
         users = await get_gbanned()
         for user_id in users:
-            BANNED_USERS.add(user_id)
+            config.BANNED_USERS.add(user_id)
         users = await get_banned_users()
         for user_id in users:
-            BANNED_USERS.add(user_id)
+            config.BANNED_USERS.add(user_id)
     except:
         pass
     
